@@ -346,7 +346,7 @@
   <!-- Intro / greeting -->
   <div class="card card-intro">
     <p class="lead">Hi there! 🤍✨ Thank you for reaching out to Kekki Cakery! 🎂</p>
-    <p>Simply fill in the form below 📝 and attach a few reference photos 📸 of your desired design. Once we have all the required details, we'll get back to you with a personalised quote within 48 hours. ⏰</p>
+    <p>Simply fill in the form below 📝 and attach a few reference photos 📸 of your desired design. Once we have all the required details, our team will review your enquiry and revert with a personalised quotation within 48–72 hours. ⏰</p>
 
     <div class="why-kekki">
       <p class="why-title">🌟 Why choose Kekki?</p>
@@ -380,7 +380,7 @@
       <div class="field">
         <label>Email <span class="req">*</span></label>
         <input type="email" name="email" placeholder="e.g. you@email.com" required>
-        <p class="hint">We'll send your enquiry confirmation here 🤍</p>
+        <p class="hint">We'll revert to you with your quotation within 48–72 hours. 🤍</p>
       </div>
     </div>
 
@@ -920,7 +920,7 @@
   // ═══════════════════════════════════════════════════════════
   //  PASTE YOUR MAKE.COM WEBHOOK URL BETWEEN THE QUOTES BELOW 👇
   //  (Step 2 of the launch guide shows you exactly where to get it)
-  const WEBHOOK_URL='https://script.google.com/a/macros/kekki.club/s/AKfycby1qX5jveH99Xdj8qIZl3i8Sk2Ggb29bwjCKN05jjlM3wHs9Hdn3YdcDQhkVA0Y6Elu/exec';
+  const WEBHOOK_URL='https://script.google.com/macros/s/AKfycbzD4NGHVnghBisaZCu-wyMrvV25dJoBmuSSCPGk2QkRwyDxQ2ttInrZV2Qvrr7QbLu-/exec';
   // ═══════════════════════════════════════════════════════════
 
   const submitBtn=document.querySelector('.submit');
@@ -1063,9 +1063,9 @@
 
       const successEl=document.getElementById('success');
       if(isUrgent){
-        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>⚡ As your cake is needed soon, we\'ll prioritise it and revert to you as quickly as we can. 🤍<br><br>📧 A confirmation has been sent to your email.<br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
+        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>⚡ As your cake is needed soon, we\'ll prioritise it and revert to you as quickly as we can. 🤍<br><br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
       }else{
-        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>We\'ll revert back to you within <strong>48–72 hours</strong>. 🤍<br><br>📧 A confirmation has been sent to your email.<br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
+        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>We\'ll revert back to you within <strong>48–72 hours</strong>. 🤍<br><br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
       }
       successEl.classList.add('show');
       successEl.scrollIntoView({behavior:'smooth',block:'center'});
