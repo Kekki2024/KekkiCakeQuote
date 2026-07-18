@@ -377,6 +377,11 @@
         <label>Mobile <span class="req">*</span></label>
         <input type="tel" name="mobile" placeholder="e.g. 8123 4567" required>
       </div>
+      <div class="field">
+        <label>Email <span class="req">*</span></label>
+        <input type="email" name="email" placeholder="e.g. you@email.com" required>
+        <p class="hint">We'll send your enquiry confirmation here 🤍</p>
+      </div>
     </div>
 
     <!-- 2. Reference photos -->
@@ -386,17 +391,26 @@
       <div class="upload" id="dropZone">
         <div class="ico">🎂</div>
         <p>Tap to upload or drag photos here</p>
-        <p class="sub">JPG / PNG / HEIC — up to 3 images</p>
+        <p class="sub">JPG / PNG / HEIC — up to 2 images</p>
         <input type="file" id="photos" accept="image/*" multiple>
       </div>
       <div class="previews" id="previews"></div>
-      <p class="hint">A clear design + your cake size are what let us quote accurately. Got more than 3 references? Send the rest to us on WhatsApp. 🤍</p>
+      <p class="hint">A clear design + your cake size are what let us quote accurately. Got more than 2 references? Send the rest to us on WhatsApp. 🤍</p>
     </div>
 
     <!-- 3. Cake details -->
     <div class="card">
       <div class="sec-num"><span>3</span><h2>Cake details</h2></div>
 
+      <div class="field">
+        <label>What would you like to order? <span class="req">*</span></label>
+        <div class="pills">
+          <div class="pill"><input type="radio" id="prod-cake" name="product_type" value="Cake" checked><label for="prod-cake">Cake 🎂</label></div>
+          <div class="pill"><input type="radio" id="prod-cupcakes" name="product_type" value="Cupcakes"><label for="prod-cupcakes">Cupcakes 🧁</label></div>
+        </div>
+      </div>
+
+      <div id="cakeFields">
       <div class="field">
         <label>Number of tiers <span class="req">*</span></label>
         <div class="pills">
@@ -458,6 +472,26 @@
           <option>Stars</option><option>Others</option>
         </select>
       </div>
+      </div><!-- /cakeFields -->
+
+      <div id="cupcakeMainFields" style="display:none">
+        <div class="row">
+          <div class="field">
+            <label>Cupcake size <span class="req">*</span></label>
+            <select name="main_cupcake_size" id="mainCupcakeSize">
+              <option value="" disabled selected>Select</option>
+              <option value="Mini (38mm diameter)">Mini — 38mm diameter</option>
+              <option value="Small (4.4cm diameter)">Small — 4.4cm diameter</option>
+              <option value="Large (5cm diameter)">Large — 5cm diameter</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Quantity <span class="req">*</span></label>
+            <input type="number" name="main_cupcake_qty" id="mainCupcakeQty" min="6" step="1" placeholder="Minimum 6">
+            <p class="hint">Minimum order of 6 cupcakes 🤍</p>
+          </div>
+        </div>
+      </div>
 
       <div class="field">
         <label>Flavour</label>
@@ -490,6 +524,18 @@
           </div>
         </details>
       </div>
+
+      <div class="field">
+        <label>Budget range</label>
+        <select name="budget">
+          <option value="I'm open — let kekki recommend" selected>I'm open — let kekki recommend ✨</option>
+          <option value="Under $100">Under $100 (bento &amp; 4" mini)</option>
+          <option value="$100 – $200">$100 – $200 (most single-tier cakes)</option>
+          <option value="$200 and above">$200 and above (larger or tiered cakes)</option>
+        </select>
+        <p class="hint">Helps us recommend the best design within your budget 💜</p>
+      </div>
+
       <div class="field">
         <label>Message on cake</label>
         <input type="text" name="message" placeholder="e.g. Happy Birthday Sarah">
@@ -497,6 +543,36 @@
       <div class="field" style="margin-bottom:0">
         <label>Design notes</label>
         <textarea name="design" placeholder="Colours, theme, style — anything to go with your reference photos"></textarea>
+      </div>
+    </div>
+
+    <!-- 3b. Add-ons -->
+    <div class="card">
+      <div class="sec-num"><span>➕</span><h2>Add-ons (optional)</h2></div>
+
+      <div class="field" id="cupcakeAddonField">
+        <label>Cupcakes 🧁</label>
+        <select name="cupcake_size" id="cupcakeSize">
+          <option value="" selected>No cupcakes</option>
+          <option value="Mini (38mm diameter)">Mini — 38mm diameter</option>
+          <option value="Small (4.4cm diameter)">Small — 4.4cm diameter</option>
+          <option value="Large (5cm diameter)">Large — 5cm diameter</option>
+        </select>
+      </div>
+      <div class="field" id="cupcakeQtyField" style="display:none;">
+        <label>Cupcake quantity <span class="req">*</span></label>
+        <input type="number" name="cupcake_qty" id="cupcakeQty" min="6" step="1" placeholder="Minimum 6">
+        <p class="hint">Minimum order of 6 cupcakes 🤍</p>
+      </div>
+
+      <div class="field">
+        <label>Famous OG Banana Cake 🍌</label>
+        <select name="banana_qty">
+          <option value="0" selected>No thanks</option>
+          <option value="Full — $22">Full (6" square, serves 10–12) — $22</option>
+          <option value="Half — $12">Half (serves 5–6) — $12</option>
+        </select>
+        <p class="hint">Full 6-inch square serves 10–12 · Half serves 5–6 🤍</p>
       </div>
     </div>
 
@@ -723,10 +799,7 @@
     <button type="submit" class="submit">Send my enquiry 🤍</button>
     <p class="terms">Orders are confirmed only with 100% payment made &amp; subject to availability.</p>
 
-    <div class="success" id="success">
-      Thank you! 😇 Your enquiry and photos have been sent to Kekki Cakery.
-      We'll be in touch with your quote within 48 hours. 🤍
-    </div>
+    <div class="success" id="success"></div>
   </form>
 
 </div>
@@ -831,12 +904,12 @@
     let hitLimit=false;
     for(const f of list){
       if(f.type.startsWith('image/')){
-        if(files.length<3){files.push(f);}
+        if(files.length<2){files.push(f);}
         else{hitLimit=true;}
       }
     }
     render();
-    if(hitLimit) alert('Up to 3 photos here 🤍 Got more references? Send the rest to us on WhatsApp!');
+    if(hitLimit) alert('Up to 2 photos here 🤍 Got more references? Send the rest to us on WhatsApp!');
   }
   dropZone.onclick=()=>input.click();
   input.onchange=e=>add(e.target.files);
@@ -861,6 +934,43 @@
     });
   }
 
+  // Cupcake quantity field toggle
+  document.getElementById('cupcakeSize').addEventListener('change',function(){
+    const q=document.getElementById('cupcakeQtyField');
+    q.style.display=this.value?'block':'none';
+    if(!this.value)document.getElementById('cupcakeQty').value='';
+  });
+
+  // Product type toggle — Cake vs Cupcakes
+  const cakeFields=document.getElementById('cakeFields');
+  const cupcakeMainFields=document.getElementById('cupcakeMainFields');
+  const mainCupcakeSize=document.getElementById('mainCupcakeSize');
+  const mainCupcakeQty=document.getElementById('mainCupcakeQty');
+  const cupcakeAddonField=document.getElementById('cupcakeAddonField');
+  const shapeSelect=document.querySelector('select[name=shape]');
+  document.querySelectorAll('input[name=product_type]').forEach(r=>{
+    r.addEventListener('change',function(){
+      const isCupcakes=this.value==='Cupcakes';
+      cakeFields.style.display=isCupcakes?'none':'block';
+      cupcakeMainFields.style.display=isCupcakes?'block':'none';
+      // Required switching
+      mainCupcakeSize.required=isCupcakes;
+      mainCupcakeQty.required=isCupcakes;
+      shapeSelect.required=!isCupcakes;
+      document.querySelectorAll('input[name=tiers]').forEach(t=>{t.required=!isCupcakes;});
+      if(isCupcakes){
+        // Clear cake-only values so stale data isn't submitted
+        document.querySelectorAll('input[name=tiers]').forEach(t=>{t.checked=false;});
+        sizeSelect.value='';sizeSelect.required=false;
+        tier2Combo.value='';tier2Combo.required=false;tier2ComboField.style.display='none';
+        tier3Combo.value='';tier3Combo.required=false;tier3ComboField.style.display='none';
+        shapeSelect.value='';
+      }else{
+        mainCupcakeSize.value='';mainCupcakeQty.value='';
+      }
+    });
+  });
+
   document.getElementById('orderForm').addEventListener('submit',async e=>{
     e.preventDefault();
     if(files.length===0){alert('Please upload at least one reference photo so we can quote 🤍');return;}
@@ -875,8 +985,32 @@
     const timePeriod=f.elements['time_period']?.value||'';
     const collectionTime=(timeHour&&timeMinute&&timePeriod)?(timeHour+':'+timeMinute+' '+timePeriod):'';
 
+    // Cupcake minimum checks (main order and add-on validated separately)
+    const productType=f.elements['product_type'].value;
+    const mainCupSize=val('main_cupcake_size');
+    const mainCupQty=parseInt(val('main_cupcake_qty')||'0',10);
+    if(productType==='Cupcakes'&&mainCupQty<6){
+      alert('Cupcakes have a minimum order of 6 🤍 Please update the quantity.');
+      document.getElementById('mainCupcakeQty').focus();
+      return;
+    }
+    const cupcakeSize=val('cupcake_size');
+    const cupcakeQty=parseInt(val('cupcake_qty')||'0',10);
+    if(cupcakeSize&&cupcakeQty<6){
+      alert('Add-on cupcakes have a minimum order of 6 🤍 Please update the quantity.');
+      document.getElementById('cupcakeQty').focus();
+      return;
+    }
+
     submitBtn.disabled=true;
     submitBtn.textContent='Sending… 🤍';
+
+    // Generate a short unique enquiry ID, e.g. KK-M3X9F2
+    const enquiryId='KK-'+Date.now().toString(36).slice(-4).toUpperCase()+Math.random().toString(36).slice(2,4).toUpperCase();
+
+    // Work out urgency from the timeline selection
+    const urgentTimelines=['Today','Tomorrow','Less than 3 days','Less than 7 days'];
+    const isUrgent=urgentTimelines.includes(timelineVal);
 
     try{
       const photos=await Promise.all(files.map(async file=>({
@@ -886,13 +1020,17 @@
       })));
 
       const payload={
+        enquiry_id:enquiryId,
         name:val('name'),
         mobile:val('mobile'),
+        email:val('email'),
+        budget:val('budget'),
         method:method,
         date:val('date'),
         time:isDelivery?'':collectionTime,
         address:isDelivery?val('address'):'',
         timeslot:isDelivery?val('timeslot'):'',
+        product_type:productType,
         size:val('size'),
         tiers:f.elements['tiers']?.value||'',
         tier2_combo:val('tier2_combo'),
@@ -902,6 +1040,11 @@
         message:val('message'),
         design:val('design'),
         gift:gift,
+        cupcake_size:cupcakeSize,
+        cupcake_qty:cupcakeSize?cupcakeQty:'',
+        main_cupcake_size:mainCupSize,
+        main_cupcake_qty:mainCupSize?mainCupQty:'',
+        banana_qty:val('banana_qty'),
         timeline:timelineVal,
         tnc_agreed:f.elements['tnc']?.checked||false,
         photo_count:files.length,
@@ -918,8 +1061,14 @@
       // Apps Script doesn't return readable CORS headers in no-cors mode,
       // so we treat a successful fetch (no network error) as success.
 
-      document.getElementById('success').classList.add('show');
-      document.getElementById('success').scrollIntoView({behavior:'smooth',block:'center'});
+      const successEl=document.getElementById('success');
+      if(isUrgent){
+        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>⚡ As your cake is needed soon, we\'ll prioritise it and revert to you as quickly as we can. 🤍<br><br>📧 A confirmation has been sent to your email.<br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
+      }else{
+        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>We\'ll revert back to you within <strong>48–72 hours</strong>. 🤍<br><br>📧 A confirmation has been sent to your email.<br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
+      }
+      successEl.classList.add('show');
+      successEl.scrollIntoView({behavior:'smooth',block:'center'});
       f.reset();
       files=[];render();
       addrBlock.classList.remove('show');
