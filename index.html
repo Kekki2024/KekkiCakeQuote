@@ -417,7 +417,7 @@
     <div class="card">
       <div class="sec-num"><span>1</span><h2>Your details</h2></div>
       <div class="field">
-        <label>Name / Recipient's name <span class="req">*</span></label>
+        <label>Your name / Person ordering <span class="req">*</span></label>
         <input type="text" name="name" required>
       </div>
       <div class="field">
@@ -714,6 +714,26 @@
           <label>Delivery address <span class="req">*</span></label>
           <textarea name="address" placeholder="Full address, unit number &amp; postal code"></textarea>
         </div>
+
+        <div class="agree-box" style="margin-bottom:16px">
+          <input type="checkbox" id="differentRecipient" name="different_recipient">
+          <label for="differentRecipient">The delivery recipient is different from the person placing this order.</label>
+        </div>
+
+        <div class="conditional" id="recipientBlock" style="margin-top:0">
+          <div class="row">
+            <div class="field">
+              <label>Recipient contact name <span class="req">*</span></label>
+              <input type="text" name="recipient_name" placeholder="Name of person receiving the order">
+            </div>
+            <div class="field">
+              <label>Recipient mobile number <span class="req">*</span></label>
+              <input type="tel" name="recipient_mobile" placeholder="e.g. 8123 4567">
+            </div>
+          </div>
+          <p class="hint" style="margin-top:-8px;margin-bottom:16px">Please ensure the recipient is contactable during the selected delivery window. 🤍</p>
+        </div>
+
         <div class="field" style="margin-bottom:0">
           <label>Preferred delivery timeslot</label>
           <select name="timeslot">
@@ -862,9 +882,29 @@
 </div>
 
 <script>
-  // Toggle delivery address + collection hours
+  // Toggle delivery address, separate recipient details + collection hours
   const addrBlock=document.getElementById('addrBlock');
   const hoursBlock=document.getElementById('hoursBlock');
+  const differentRecipient=document.getElementById('differentRecipient');
+  const recipientBlock=document.getElementById('recipientBlock');
+  const recipientName=document.querySelector('input[name=recipient_name]');
+  const recipientMobile=document.querySelector('input[name=recipient_mobile]');
+
+  function updateRecipientFields(){
+    const isDelivery=document.getElementById('m-deliver').checked;
+    const needsRecipient=isDelivery&&differentRecipient.checked;
+    recipientBlock.classList.toggle('show',needsRecipient);
+    recipientName.required=needsRecipient;
+    recipientMobile.required=needsRecipient;
+
+    if(!needsRecipient){
+      recipientName.value='';
+      recipientMobile.value='';
+    }
+  }
+
+  differentRecipient.addEventListener('change',updateRecipientFields);
+
   document.querySelectorAll('input[name=method]').forEach(r=>{
     r.addEventListener('change',()=>{
       const isDelivery=document.getElementById('m-deliver').checked;
@@ -872,6 +912,12 @@
       addrBlock.classList.toggle('show',isDelivery);
       addrBlock.querySelector('textarea').required=isDelivery;
       addrBlock.querySelector('select[name=timeslot]').required=isDelivery;
+
+      if(!isDelivery){
+        differentRecipient.checked=false;
+      }
+      updateRecipientFields();
+
       hoursBlock.classList.toggle('show',isCollect);
       hoursBlock.querySelector('select[name=time_hour]').required=isCollect;
       hoursBlock.querySelector('select[name=time_minute]').required=isCollect;
@@ -1119,6 +1165,9 @@
         time:isDelivery?'':collectionTime,
         address:isDelivery?val('address'):'',
         timeslot:isDelivery?val('timeslot'):'',
+        different_recipient:isDelivery?(f.elements['different_recipient']?.checked||false):false,
+        recipient_name:isDelivery&&f.elements['different_recipient']?.checked?val('recipient_name'):'',
+        recipient_mobile:isDelivery&&f.elements['different_recipient']?.checked?val('recipient_mobile'):'',
         product_type:productType,
         size:val('size'),
         tiers:f.elements['tiers']?.value||'',
@@ -1164,6 +1213,10 @@
       f.reset();
       files=[];render();
       addrBlock.classList.remove('show');
+      recipientBlock.classList.remove('show');
+      differentRecipient.checked=false;
+      recipientName.required=false;
+      recipientMobile.required=false;
       urgentNotice.classList.remove('show');
       urgentAgree.required=false;
       isUrgentDate=false;
