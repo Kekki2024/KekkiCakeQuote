@@ -332,6 +332,52 @@
   .agree-box input{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--indigo)}
   .agree-box label{margin:0;font-size:13.5px;font-weight:400;color:var(--ink);cursor:pointer}
   .agree-box a{color:var(--indigo);text-decoration:underline}
+
+  /* Last-minute enquiry notice */
+  .urgent-notice{
+    display:none;
+    margin-top:14px;
+    padding:16px;
+    border:1px solid #EACAD4;
+    border-left:4px solid var(--error);
+    border-radius:13px;
+    background:#FBF0F3;
+  }
+  .urgent-notice.show{display:block;animation:fade .25s ease}
+  .urgent-notice h3{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    font-weight:500;
+    color:var(--error);
+    margin-bottom:7px;
+  }
+  .urgent-notice p{
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .urgent-agree{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:13px;
+    padding-top:13px;
+    border-top:1px solid #EACAD4;
+  }
+  .urgent-agree input{
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    margin-top:2px;
+    accent-color:var(--error);
+  }
+  .urgent-agree label{
+    margin:0;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -346,7 +392,8 @@
   <!-- Intro / greeting -->
   <div class="card card-intro">
     <p class="lead">Hi there! 🤍✨ Thank you for reaching out to Kekki Cakery! 🎂</p>
-    <p>Simply fill in the form below 📝 and attach a few reference photos 📸 of your desired design. Once we have all the required details, our team will review your enquiry and revert with a personalised quotation within 48–72 hours. ⏰</p>
+    <p>Simply fill in the form below 📝 and attach a few reference photos 📸 of your desired design. Once we have all the required details, our team will review your enquiry and send you a personalised quotation.</p>
+    <p><strong>⏰ Our usual response time is within 48–72 hours during business hours.</strong> We do accept selected last-minute orders, subject to slot availability and design feasibility. For events within the next 3 days, we will do our best to prioritise your enquiry; however, an immediate or same-day reply cannot be guaranteed.</p>
 
     <div class="why-kekki">
       <p class="why-title">🌟 Why choose Kekki?</p>
@@ -599,9 +646,19 @@
         </div>
       </div>
 
+      <div class="urgent-notice" id="urgentNotice" role="alert" aria-live="polite">
+        <h3>⚠️ Last-Minute Order Notice</h3>
+        <p>Your event is within the next <strong>3 days</strong>. We do accept selected last-minute orders, subject to <strong>slot availability</strong> and <strong>design feasibility</strong>. Certain designs may need to be simplified or adjusted based on the available preparation time.</p>
+        <p style="margin-top:8px">We will do our best to prioritise urgent enquiries; however, submitting this form does <strong>not</strong> guarantee order acceptance or an immediate or same-day response.</p>
+        <div class="urgent-agree">
+          <input type="checkbox" id="urgentAgree" name="urgent_acknowledged">
+          <label for="urgentAgree">I understand that this is a last-minute enquiry and that submitting this form does not guarantee acceptance or an immediate or same-day reply.</label>
+        </div>
+      </div>
+
       <div class="field" style="margin-top:20px;margin-bottom:0">
         <label>When do you need it? <span class="req">*</span></label>
-        <p class="hint" style="margin-top:0;margin-bottom:10px">Yes, we accept last-minute orders! Which are you? 🤍</p>
+        <p class="hint" style="margin-top:0;margin-bottom:10px">We accept selected last-minute orders, subject to slot availability and design feasibility. Please select the timing that best applies. 🤍</p>
         <div class="pills" style="flex-wrap:wrap">
           <div class="pill" style="min-width:100px"><input type="radio" id="t-today" name="timeline" value="Today" required><label for="t-today">Today</label></div>
           <div class="pill" style="min-width:100px"><input type="radio" id="t-tmr" name="timeline" value="Tomorrow"><label for="t-tmr">Tomorrow</label></div>
@@ -796,7 +853,7 @@
       </div>
     </div>
 
-    <button type="submit" class="submit">Send my enquiry 🤍</button>
+    <button type="submit" class="submit" id="submitBtn">Send my enquiry 🤍</button>
     <p class="terms">Orders are confirmed only with 100% payment made &amp; subject to availability.</p>
 
     <div class="success" id="success"></div>
@@ -823,34 +880,67 @@
     });
   });
 
-  // Timeline selector messaging + Monday collection check
+  // Timeline selector messaging + date-driven last-minute warning
   const monWarn=document.getElementById('monWarn');
   const timelineMsg=document.getElementById('timelineMsg');
+  const urgentNotice=document.getElementById('urgentNotice');
+  const urgentAgree=document.getElementById('urgentAgree');
+  const eventDateInput=document.querySelector('input[name=date]');
+  const submitBtn=document.getElementById('submitBtn');
   let timelineVal='';
+  let isUrgentDate=false;
+
   function checkMonday(){
-    const dv=document.querySelector('input[name=date]').value;
+    const dv=eventDateInput.value;
     const isCollect=document.getElementById('m-collect').checked;
     if(!dv||!isCollect){monWarn.style.display='none';return;}
     const isMon=new Date(dv+'T00:00').getDay()===1;
     monWarn.style.display=isMon?'block':'none';
   }
+
+  function daysUntilEvent(dateValue){
+    if(!dateValue) return null;
+    const selected=new Date(dateValue+'T00:00:00');
+    const today=new Date();
+    today.setHours(0,0,0,0);
+    return Math.round((selected-today)/86400000);
+  }
+
+  function updateUrgentState(){
+    const days=daysUntilEvent(eventDateInput.value);
+    isUrgentDate=days!==null&&days>=0&&days<=3;
+
+    urgentNotice.classList.toggle('show',isUrgentDate);
+    urgentAgree.required=isUrgentDate;
+
+    if(!isUrgentDate){
+      urgentAgree.checked=false;
+      submitBtn.textContent='Send my enquiry 🤍';
+    }else{
+      submitBtn.textContent='Submit urgent enquiry 🤍';
+    }
+  }
+
   const timelineNotes={
-    'Today':'📞 For same-day orders, please call us so we can check availability right away! 🤍',
-    'Tomorrow':'⚡ Short notice — subject to availability. Send your design early so we can confirm quickly.',
-    'Less than 3 days':'⚡ Short notice — subject to availability. Send your design early so we can confirm quickly.',
-    'Less than 7 days':'⚡ Subject to availability — send your design early so we can confirm quickly. 🤍',
+    'Today':'⚠️ Same-day enquiries are subject to availability and design feasibility. An immediate reply cannot be guaranteed.',
+    'Tomorrow':'⚠️ This is a last-minute enquiry. Acceptance and response timing cannot be guaranteed.',
+    'Less than 3 days':'⚠️ This is a last-minute enquiry. Acceptance and response timing cannot be guaranteed.',
+    'Less than 7 days':'⚡ Subject to availability and design feasibility. Please submit complete details and reference photos.',
     'More than a week':'🤍 Perfect — plenty of time to plan your cake!'
   };
+
   document.querySelectorAll('input[name=timeline]').forEach(r=>{
     r.addEventListener('change',()=>{
       timelineVal=r.value;
-      const isUrgentPick=(r.value==='Today');
+      const isUrgentPick=['Today','Tomorrow','Less than 3 days'].includes(r.value);
       timelineMsg.innerHTML='<div class="gift-box" style="background:'+(isUrgentPick?'#FBF0F3;border-color:#EACAD4':'var(--lavender-mist)')+'"><div class="txt"><span style="color:'+(isUrgentPick?'var(--error)':'var(--indigo)')+';font-weight:500">'+timelineNotes[r.value]+'</span></div></div>';
       timelineMsg.style.display='block';
     });
   });
-  document.querySelector('input[name=date]').addEventListener('change',()=>{
+
+  eventDateInput.addEventListener('change',()=>{
     checkMonday();
+    updateUrgentState();
   });
 
   // Tier selector — show/hide single size vs fixed tier-combo dropdowns
@@ -923,7 +1013,7 @@
   const WEBHOOK_URL='https://script.google.com/macros/s/AKfycbzD4NGHVnghBisaZCu-wyMrvV25dJoBmuSSCPGk2QkRwyDxQ2ttInrZV2Qvrr7QbLu-/exec';
   // ═══════════════════════════════════════════════════════════
 
-  const submitBtn=document.querySelector('.submit');
+
 
   function fileToBase64(file){
     return new Promise((res,rej)=>{
@@ -1008,9 +1098,8 @@
     // Generate a short unique enquiry ID, e.g. KK-M3X9F2
     const enquiryId='KK-'+Date.now().toString(36).slice(-4).toUpperCase()+Math.random().toString(36).slice(2,4).toUpperCase();
 
-    // Work out urgency from the timeline selection
-    const urgentTimelines=['Today','Tomorrow','Less than 3 days','Less than 7 days'];
-    const isUrgent=urgentTimelines.includes(timelineVal);
+    // Urgency is determined reliably from the selected event date.
+    const isUrgent=isUrgentDate;
 
     try{
       const photos=await Promise.all(files.map(async file=>({
@@ -1046,6 +1135,9 @@
         main_cupcake_qty:mainCupSize?mainCupQty:'',
         banana_qty:val('banana_qty'),
         timeline:timelineVal,
+        urgent:isUrgent,
+        days_to_event:daysUntilEvent(val('date')),
+        urgent_acknowledged:isUrgent?(f.elements['urgent_acknowledged']?.checked||false):false,
         tnc_agreed:f.elements['tnc']?.checked||false,
         photo_count:files.length,
         photos:photos,
@@ -1063,20 +1155,25 @@
 
       const successEl=document.getElementById('success');
       if(isUrgent){
-        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>⚡ As your cake is needed soon, we\'ll prioritise it and revert to you as quickly as we can. 🤍<br><br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
+        successEl.innerHTML='Thank you! 😇 We\'ve received your urgent enquiry <strong>'+enquiryId+'</strong>.<br><br>As your event is within the next <strong>3 days</strong>, we will do our best to prioritise your request where possible. Please note that submission does <strong>not</strong> guarantee acceptance or an immediate or same-day response. All orders remain subject to slot availability and design feasibility. 🤍<br><br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
       }else{
-        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>We\'ll revert back to you within <strong>48–72 hours</strong>. 🤍<br><br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
+        successEl.innerHTML='Thank you! 😇 We\'ve received your enquiry <strong>'+enquiryId+'</strong>.<br>Our usual response time is within <strong>48–72 hours during business hours</strong>. 🤍<br><br><span style="font-size:0.9em;">💤 Our chat is closed on Mondays — replies resume on Tuesday.</span>';
       }
       successEl.classList.add('show');
       successEl.scrollIntoView({behavior:'smooth',block:'center'});
       f.reset();
       files=[];render();
       addrBlock.classList.remove('show');
+      urgentNotice.classList.remove('show');
+      urgentAgree.required=false;
+      isUrgentDate=false;
+      timelineVal='';
+      timelineMsg.style.display='none';
       submitBtn.textContent='Sent! 🤍';
     }catch(err){
       alert('Something went wrong sending your enquiry. Please try again, or message us directly on WhatsApp 🤍');
       submitBtn.disabled=false;
-      submitBtn.textContent='Send my enquiry 🤍';
+      submitBtn.textContent=isUrgentDate?'Submit urgent enquiry 🤍':'Send my enquiry 🤍';
     }
   });
 </script>
