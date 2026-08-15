@@ -370,8 +370,8 @@
   .cal-day.past{background:none;color:#C9C4D6;cursor:not-allowed}
   .cal-day.avail{background:#EAF6EE;color:#2E6B45;border-color:#CBE7D5}
   .cal-day.almost{background:#FDF1DC;color:#8A6420;border-color:#F2DFBC}
-  .cal-day.morning-full{background:#EAF2FB;color:#3D628D;border-color:#CDDDF0}
-  .cal-day.afternoon-full{background:#F1ECFB;color:#624F8D;border-color:#DDD2F1}
+  .cal-day.delivery{background:#EAF1FB;color:#365D8D;border-color:#CADAF1}
+  .cal-day.partial{background:#FFF4E8;color:#9A5C24;border-color:#F1D8BC}
   .cal-day.full{background:#FBEAEE;color:#9C4459;border-color:#F0D2DA;cursor:not-allowed;text-decoration:line-through}
   .cal-day.sel{outline:2.5px solid var(--indigo);outline-offset:1px;font-weight:700}
   .cal-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -828,12 +828,10 @@
           <div class="cal-grid" id="calGrid"></div>
           <div class="cal-legend">
             <span><i style="background:#EAF6EE;border:1px solid #CBE7D5"></i>Available</span>
-            <span><i style="background:#FDF1DC;border:1px solid #F2DFBC"></i>Limited slots left — early confirmation recommended</span>
-            <span><i style="background:#EAF2FB;border:1px solid #CDDDF0"></i>Morning fully booked — afternoon available</span>
-            <span><i style="background:#F1ECFB;border:1px solid #DDD2F1"></i>Afternoon fully booked — morning available</span>
+            <span><i style="background:#FDF1DC;border:1px solid #F2DFBC"></i>Almost full — check with us</span>
             <span><i style="background:#FBEAEE;border:1px solid #F0D2DA"></i>Fully booked</span>
           </div>
-          <p class="cal-note">Tap a date to select it. Slots are secured on a first-payment basis and availability may change throughout the day. We recommend confirming early for dates with limited availability. 🤍</p>
+          <p class="cal-note">Tap a date to select it. Availability is indicative and confirmed only once payment is made. 🤍</p>
         </div>
       </div>
 
@@ -1230,10 +1228,10 @@
     function normaliseStatus(raw){
       const t=(raw||'').trim().toLowerCase();
       if(!t) return '';
-      if(/morning\s+(?:is\s+)?full(?:y)?\s*booked|full(?:y)?\s*booked\s+(?:in\s+)?(?:the\s+)?morning|morning\s+full/.test(t)) return 'morning-full';
-      if(/afternoon\s+(?:is\s+)?full(?:y)?\s*booked|full(?:y)?\s*booked\s+(?:in\s+)?(?:the\s+)?afternoon|afternoon\s+full/.test(t)) return 'afternoon-full';
+      if(t.includes('delivery only')) return 'delivery';
+      if(t.includes('morning fully booked')||t.includes('afternoon fully booked')) return 'partial';
+      if(t.includes('fully booked')||t==='full') return 'full';
       if(t.includes('almost')||t.includes('limited')||t.includes('few')) return 'almost';
-      if(t.includes('full')) return 'full';
       if(t.includes('avail')||t.includes('open')) return 'avail';
       return '';
     }
@@ -1276,16 +1274,11 @@
         }else{
           const st=statuses[k]||'avail';
           el.classList.add(st);
-          const labels={
-            'avail':'Available',
-            'almost':'Limited slots left — early confirmation recommended',
-            'morning-full':'Morning fully booked — afternoon slots available',
-            'afternoon-full':'Afternoon fully booked — morning slots available',
-            'full':'Fully booked'
-          };
-          el.title=labels[st]||'';
           if(st==='full'&&BLOCK_FULLY_BOOKED){
+            el.title='Fully booked';
           }else{
+            if(st==='delivery') el.title='Delivery only';
+            if(st==='partial') el.title='Limited time slots available · evening delivery only';
             el.setAttribute('role','button');
             el.setAttribute('tabindex','0');
             const pick=()=>{
