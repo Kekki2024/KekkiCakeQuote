@@ -333,6 +333,54 @@
   .agree-box label{margin:0;font-size:13.5px;font-weight:400;color:var(--ink);cursor:pointer}
   .agree-box a{color:var(--indigo);text-decoration:underline}
 
+  /* Quick note before submitting — per-point acknowledgements */
+  .ack-intro{font-size:12.5px;color:var(--indigo-soft);font-weight:400;margin:0 0 12px;line-height:1.55}
+  .ack-list{display:flex;flex-direction:column;gap:10px}
+  .ack-item{
+    display:flex;align-items:flex-start;gap:11px;
+    background:var(--cream);border:1px solid var(--line);
+    border-radius:13px;padding:14px 16px;transition:border-color .18s,background .18s;
+  }
+  .ack-item:has(input:checked){background:var(--lavender-mist);border-color:var(--lavender)}
+  .ack-item input{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--indigo);cursor:pointer}
+  .ack-item label{margin:0;font-size:13px;color:var(--ink);font-weight:300;line-height:1.6;cursor:pointer}
+  .ack-item label b{display:block;color:var(--indigo);font-weight:600;font-size:13.5px;margin-bottom:3px}
+  .ack-item label .ack-p{display:block;margin-top:8px}
+
+  /* Availability calendar */
+  .cal-wrap{display:none;margin-bottom:14px}
+  .cal-wrap.show{display:block}
+  .cal-box{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .cal-head strong{font-family:'Fraunces',Lora,Georgia,serif;font-size:15px;color:var(--indigo);font-weight:600}
+  .cal-nav{display:flex;gap:6px}
+  .cal-nav button{
+    width:30px;height:30px;border-radius:9px;border:1px solid var(--line);
+    background:#fff;color:var(--indigo);font-size:15px;line-height:1;cursor:pointer;
+  }
+  .cal-nav button:disabled{opacity:.35;cursor:not-allowed}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .cal-dow{text-align:center;font-size:10.5px;font-weight:600;color:var(--indigo-soft);padding-bottom:4px;letter-spacing:.03em}
+  .cal-day{
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border-radius:9px;font-size:12.5px;font-weight:500;border:1px solid transparent;
+    cursor:pointer;background:#fff;color:var(--ink);
+  }
+  .cal-day.pad{background:none;cursor:default}
+  .cal-day.past{background:none;color:#C9C4D6;cursor:not-allowed}
+  .cal-day.avail{background:#EAF6EE;color:#2E6B45;border-color:#CBE7D5}
+  .cal-day.almost{background:#FDF1DC;color:#8A6420;border-color:#F2DFBC}
+  .cal-day.full{background:#FBEAEE;color:#9C4459;border-color:#F0D2DA;cursor:not-allowed;text-decoration:line-through}
+  .cal-day.sel{outline:2.5px solid var(--indigo);outline-offset:1px;font-weight:700}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .cal-legend span{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink);font-weight:300}
+  .cal-legend i{width:11px;height:11px;border-radius:4px;display:inline-block;flex-shrink:0}
+  .cal-note{font-size:11.5px;color:var(--indigo-soft);margin-top:10px;line-height:1.5}
+  .ack-sub{
+    font-family:'Fraunces',Lora,Georgia,serif;font-size:16px;color:var(--indigo);
+    font-weight:600;margin:22px 0 10px;padding-top:18px;border-top:1px solid var(--line);
+  }
+
   /* Last-minute enquiry notice */
   .urgent-notice{
     display:none;
@@ -393,8 +441,6 @@
   <div class="card card-intro">
     <p class="lead">Hi there! 🤍✨ Thank you for reaching out to Kekki Cakery! 🎂</p>
     <p>Simply fill in the form below 📝 and attach a few reference photos 📸 of your desired design. Once we have all the required details, our team will review your enquiry and send you a personalised quotation.</p>
-    <p><strong>⏰ Our usual response time is within 48–72 hours during business hours.</strong> We do accept selected last-minute orders, subject to slot availability and design feasibility. For events within the next 3 days, we will do our best to prioritise your enquiry; however, an immediate or same-day reply cannot be guaranteed.</p>
-
     <div class="why-kekki">
       <p class="why-title">🌟 Why choose Kekki?</p>
       <ul class="why-list">
@@ -405,17 +451,134 @@
       </ul>
     </div>
 
-    <p class="note">🎨 Please note that we do not specialise in heavily fondant-covered cakes or elaborate fondant figurine cakes. If you're unsure, simply send us your inspiration photos and we'll be happy to advise. 💕</p>
-    <p class="note" style="margin-top:8px">⏳ Fridays–Mondays are our busiest production days, so quotation replies may take a little longer during this period. Thank you so much for your patience and understanding! 🫶</p>
-
     <p class="signoff">We can't wait to be part of your celebration! 🥳🎈<br>With love, Ferrena 🤍</p>
   </div>
 
   <form id="orderForm">
 
-    <!-- 1. Your details -->
+    <!-- 1. Quick note & Terms -->
     <div class="card">
-      <div class="sec-num"><span>1</span><h2>Your details</h2></div>
+      <div class="sec-num"><span>1</span><h2>Quick note before submitting 💕</h2></div>
+      <p class="ack-intro">Please tick each point to confirm you've read and understood it. All are required. 🤍</p>
+
+      <div class="ack-list">
+        <div class="ack-item">
+          <input type="checkbox" id="ackResponse" name="ack_response" required>
+          <label for="ackResponse"><b>⏰ Response time</b>Our usual response time is within 48–72 hours during business hours. For events within the next 3 days, we'll do our best to prioritise your enquiry, though an immediate or same-day reply may not always be possible.<span class="ack-p">⏳ Fridays–Mondays are our busiest production days, so quotation replies may take a little longer during this period. Thank you so much for your patience and understanding! 🫶</span></label>
+        </div>
+        <div class="ack-item">
+          <input type="checkbox" id="ackDesign" name="ack_design" required>
+          <label for="ackDesign"><b>🎂 Cake designs</b>We're a buttercream-based cakery and that's what we do best! 💕 If your design requires fondant elements, we'll let you know what's feasible. For AI-generated cake references, we'll use them as inspiration rather than replicate them 100%, adding our own little Kekki touch to bring your cake to life. ✨</label>
+        </div>
+        <div class="ack-item">
+          <input type="checkbox" id="ackUpdates" name="ack_updates" required>
+          <label for="ackUpdates"><b>✨ Progress updates</b>While your cake is being created, we don't send work-in-progress photos or updates. Our team will create your cake based on all the details confirmed with you. 🫶</label>
+        </div>
+        <div class="ack-item">
+          <input type="checkbox" id="ackDrafts" name="ack_drafts" required>
+          <label for="ackDrafts"><b>✏️ Drafts &amp; drawings</b>As every cake is individually handmade, we don't provide sketches, drafts or drawings before we start. We'll create your cake based on your confirmed details and reference images, with our own little Kekki touch. ✨</label>
+        </div>
+        <div class="ack-item">
+          <input type="checkbox" id="ackBooking" name="ack_booking" required>
+          <label for="ackBooking"><b>💕 Booking &amp; cancellations</b>Once payment is made, your order is confirmed and the slot is reserved specially for you. As such, cancellations are not refundable.<span class="ack-p">If your plans change, just let us know at least 3 days before your event and we'll provide the order value as credit, valid for 3 months. Cancellations made less than 3 days before the event will be considered fulfilled/sold, and no credit will be provided.</span></label>
+        </div>
+      </div>
+
+      <h3 class="ack-sub">Terms &amp; Conditions</h3>
+      <details class="flav-menu tnc-menu">
+        <summary>Tap to read our full Terms &amp; Conditions</summary>
+        <div class="tnc-body">
+
+          <div class="tnc-group">
+            <h4>Design</h4>
+            <ol>
+              <li><b>Handmade Nature:</b> Each cake is unique; we can't make exact copies. Any cake photos you share with us or that are provided by Kekki serve as inspiration for designing.</li>
+              <li><b>Colour Discrepancies:</b> Colours can look different on screen.</li>
+              <li><b>Design:</b> Once cake has been baked and decorated no changes are allowed. We operate as a lean team and do not provide progress or photo updates during production, so we can focus on getting every cake right. We appreciate your understanding.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Allergens</h4>
+            <ol>
+              <li><b>We are MUIS Halal Certified.</b> All products are produced in a facility that may contain nuts, gluten, and other allergens. Products may contain traces of these items.</li>
+              <li><b>Dietary Requirements:</b> It is your responsibility to inform Kekki in writing of any dietary requirements before receiving the invoice.</li>
+              <li><b>Non-Edible Items:</b> Some non-edible items may be used as decorations or packaging for the products. It is your responsibility to remove any non-edible items before consumption.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Payment Terms</h4>
+            <ol>
+              <li><b>Payment Method:</b> Payment to be made via PayNow to UEN 202400891E ONLY. Indicate your invoice number upon payment and provide us the screenshot of your payment via WhatsApp. <em>Subject to our availability — we recommend securing your slot via payment on a first-come-first-served basis.</em></li>
+              <li><b>Order Confirmation:</b> Your order is confirmed when all details are correct and we receive 100% of the payment. No changes or cancellations can be made. Non-refundable.</li>
+              <li><b>Commencement of Work:</b> We start making your cake once payment is complete and design details are set.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Cancellation</h4>
+            <ol>
+              <li><b>Cancellation:</b> Strictly no cancellation after payment has been made and order is confirmed. No last-minute (less than 4 days prior to fulfilment date) cancellation — product will be deemed sold, no credits reissued, no rebake.</li>
+              <li><b>Changes:</b> Changes of date are to be made 1 week prior to collection and will be subject to availability.</li>
+              <li><b>Right to Cancel:</b> Kekki reserves the right to cancel orders at any time. Payments already made by the customer will be issued as credits for up to 6 months from the initial fulfilment date.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Return / Refund Policy</h4>
+            <ol>
+              <li><b>Complaints:</b> All orders are checked for defects before delivery. If you receive a defective item, please contact us immediately upon receiving with your invoice number, name, address and reason for return/exchange. We will not be responsible for complaints received once the cake has been under your care/storage/after consumption.</li>
+              <li><b>Return Responsibility:</b> The cost of returning the item to us is your responsibility.</li>
+              <li><b>Refund Policy:</b> Any refund conclusion is strictly at Kekki's discretion. We do not offer cash or bank refunds under any circumstances. For exchanges or returns, store credits with a one-month expiry will be given. Credits not used by then will be deemed expired.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Storage &amp; Shelf Life</h4>
+            <ol>
+              <li><b>Storage:</b> Cakes need to be handled with care and refrigerated. Can be left out 30–45 mins in an air-conditioned room, or 15–30 mins at room temperature, subject to conditions.</li>
+              <li><b>Shelf Life:</b> Best consumed within 3 days. For cakes with fruits, best consumed on the same day.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Self Pick Up</h4>
+            <ol>
+              <li><b>By Appointment:</b> Self collection is strictly by appointment; changes or late charges apply. Additional $10/hour for holding applies. Uncollected cakes will be disposed after 24 hours from the said collection date and time.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Delivery</h4>
+            <ol>
+              <li><b>Delivery Areas &amp; Fees:</b> Our delivery covers all areas in Singapore. Refer to our delivery fee table for more information.</li>
+              <li><b>Redelivery Charges:</b> Should redelivery be required within the delivery time frame, charges apply. We strongly discourage leaving cakes/bakes outdoors as they are perishable and require refrigeration.</li>
+              <li><b>Own Courier:</b> If you use your own courier, you're responsible for liaising with them directly. Arrange a car, not a motorbike, to transport your cake safely.</li>
+            </ol>
+          </div>
+
+          <div class="tnc-group">
+            <h4>Collection / Delivery Terms</h4>
+            <ol>
+              <li><b>Kekki Responsibility:</b> While we take every precaution during delivery and setup, we cannot be held responsible for any damage once our products have been delivered/collected.</li>
+              <li><b>Customer Responsibility:</b> Please ensure you or a designated representative is available to collect the product at the agreed time and location. Fees apply for redelivery, and any damage from unavailability is the customer's responsibility.</li>
+              <li><b>Delivery Timing &amp; Variability:</b> We deliver freshly baked cakes every day. You may request a specific delivery time slot; note deliveries may arrive early, on time, or slightly delayed depending on driver availability, route conditions, weather, and distance.</li>
+            </ol>
+          </div>
+
+        </div>
+      </details>
+
+      <div class="agree-box">
+        <input type="checkbox" id="tncAgree" name="tnc" required>
+        <label for="tncAgree">I have read and agree to Kekki Cakery's Terms &amp; Conditions above. <span class="req">*</span></label>
+      </div>
+    </div>
+
+    <!-- 2. Your details -->
+    <div class="card">
+      <div class="sec-num"><span>2</span><h2>Your details</h2></div>
       <div class="field">
         <label>Your name / Person ordering <span class="req">*</span></label>
         <input type="text" name="name" required>
@@ -431,9 +594,9 @@
       </div>
     </div>
 
-    <!-- 2. Reference photos -->
+    <!-- 3. Reference photos -->
     <div class="card">
-      <div class="sec-num"><span>2</span><h2>Reference photos</h2></div>
+      <div class="sec-num"><span>3</span><h2>Reference photos</h2></div>
       <label>Upload design references for your quote <span class="req">*</span></label>
       <div class="upload" id="dropZone">
         <div class="ico">🎂</div>
@@ -445,9 +608,9 @@
       <p class="hint">A clear design + your cake size are what let us quote accurately. Got more than 2 references? Send the rest to us on WhatsApp. 🤍</p>
     </div>
 
-    <!-- 3. Cake details -->
+    <!-- 4. Cake details -->
     <div class="card">
-      <div class="sec-num"><span>3</span><h2>Cake details</h2></div>
+      <div class="sec-num"><span>4</span><h2>Cake details</h2></div>
 
       <div class="field">
         <label>What would you like to order? <span class="req">*</span></label>
@@ -593,7 +756,7 @@
       </div>
     </div>
 
-    <!-- 3b. Add-ons -->
+    <!-- 4b. Add-ons -->
     <div class="card">
       <div class="sec-num"><span>➕</span><h2>Add-ons (optional)</h2></div>
 
@@ -611,6 +774,17 @@
         <input type="number" name="cupcake_qty" id="cupcakeQty" min="6" step="1" placeholder="Minimum 6">
         <p class="hint">Minimum order of 6 cupcakes 🤍</p>
       </div>
+      <div class="field" id="cupcakeRefField" style="display:none;">
+        <label>Cupcake design reference (optional)</label>
+        <div class="upload" id="cupcakeDropZone">
+          <div class="ico">🧁</div>
+          <p>Tap to upload or drag a photo here</p>
+          <p class="sub">JPG / PNG / HEIC — 1 image</p>
+          <input type="file" id="cupcakePhotos" accept="image/*">
+        </div>
+        <div class="previews" id="cupcakePreviews"></div>
+        <p class="hint">Leave blank and we'll match your cupcakes to your cake design. 🤍</p>
+      </div>
 
       <div class="field">
         <label>Famous OG Banana Cake 🍌</label>
@@ -625,7 +799,7 @@
 
     <!-- 4. Collection / delivery -->
     <div class="card">
-      <div class="sec-num"><span>4</span><h2>Collection or delivery</h2></div>
+      <div class="sec-num"><span>5</span><h2>Collection or delivery</h2></div>
       <div class="field">
         <div class="pills">
           <div class="pill">
@@ -636,6 +810,26 @@
             <input type="radio" id="m-deliver" name="method" value="Delivery">
             <label for="m-deliver">🚚 Delivery<br><span style="font-size:11px;font-weight:300">select timeslot</span></label>
           </div>
+        </div>
+      </div>
+
+      <div class="cal-wrap" id="calWrap">
+        <label>Slot availability</label>
+        <div class="cal-box">
+          <div class="cal-head">
+            <strong id="calMonth">—</strong>
+            <div class="cal-nav">
+              <button type="button" id="calPrev" aria-label="Previous month">‹</button>
+              <button type="button" id="calNext" aria-label="Next month">›</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <span><i style="background:#EAF6EE;border:1px solid #CBE7D5"></i>Available</span>
+            <span><i style="background:#FDF1DC;border:1px solid #F2DFBC"></i>Almost full — check with us</span>
+            <span><i style="background:#FBEAEE;border:1px solid #F0D2DA"></i>Fully booked</span>
+          </div>
+          <p class="cal-note">Tap a date to select it. Availability is indicative and confirmed only once payment is made. 🤍</p>
         </div>
       </div>
 
@@ -759,7 +953,7 @@
 
     <!-- 5. Gift add-on -->
     <div class="card">
-      <div class="sec-num"><span>5</span><h2>Make it a gift?</h2></div>
+      <div class="sec-num"><span>6</span><h2>Make it a gift?</h2></div>
       <div class="gift-box">
         <div class="txt">
           <strong>Add a gift card — $1.20 🎀</strong>
@@ -775,101 +969,6 @@
             <label for="g-no">No</label>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- 6. Terms & Conditions -->
-    <div class="card">
-      <div class="sec-num"><span>6</span><h2>Terms &amp; Conditions</h2></div>
-
-      <details class="flav-menu tnc-menu">
-        <summary>Tap to read our full Terms &amp; Conditions</summary>
-        <div class="tnc-body">
-
-          <div class="tnc-group">
-            <h4>Design</h4>
-            <ol>
-              <li><b>Handmade Nature:</b> Each cake is unique; we can't make exact copies. Any cake photos you share with us or that are provided by Kekki serve as inspiration for designing.</li>
-              <li><b>Colour Discrepancies:</b> Colours can look different on screen.</li>
-              <li><b>Design:</b> Once cake has been baked and decorated no changes are allowed. We operate as a lean team and do not provide progress or photo updates during production, so we can focus on getting every cake right. We appreciate your understanding.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Allergens</h4>
-            <ol>
-              <li><b>We are MUIS Halal Certified.</b> All products are produced in a facility that may contain nuts, gluten, and other allergens. Products may contain traces of these items.</li>
-              <li><b>Dietary Requirements:</b> It is your responsibility to inform Kekki in writing of any dietary requirements before receiving the invoice.</li>
-              <li><b>Non-Edible Items:</b> Some non-edible items may be used as decorations or packaging for the products. It is your responsibility to remove any non-edible items before consumption.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Payment Terms</h4>
-            <ol>
-              <li><b>Payment Method:</b> Payment to be made via PayNow to UEN 202400891E ONLY. Indicate your invoice number upon payment and provide us the screenshot of your payment via WhatsApp. <em>Subject to our availability — we recommend securing your slot via payment on a first-come-first-served basis.</em></li>
-              <li><b>Order Confirmation:</b> Your order is confirmed when all details are correct and we receive 100% of the payment. No changes or cancellations can be made. Non-refundable.</li>
-              <li><b>Commencement of Work:</b> We start making your cake once payment is complete and design details are set.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Cancellation</h4>
-            <ol>
-              <li><b>Cancellation:</b> Strictly no cancellation after payment has been made and order is confirmed. No last-minute (less than 4 days prior to fulfilment date) cancellation — product will be deemed sold, no credits reissued, no rebake.</li>
-              <li><b>Changes:</b> Changes of date are to be made 1 week prior to collection and will be subject to availability.</li>
-              <li><b>Right to Cancel:</b> Kekki reserves the right to cancel orders at any time. Payments already made by the customer will be issued as credits for up to 6 months from the initial fulfilment date.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Return / Refund Policy</h4>
-            <ol>
-              <li><b>Complaints:</b> All orders are checked for defects before delivery. If you receive a defective item, please contact us immediately upon receiving with your invoice number, name, address and reason for return/exchange. We will not be responsible for complaints received once the cake has been under your care/storage/after consumption.</li>
-              <li><b>Return Responsibility:</b> The cost of returning the item to us is your responsibility.</li>
-              <li><b>Refund Policy:</b> Any refund conclusion is strictly at Kekki's discretion. We do not offer cash or bank refunds under any circumstances. For exchanges or returns, store credits with a one-month expiry will be given. Credits not used by then will be deemed expired.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Storage &amp; Shelf Life</h4>
-            <ol>
-              <li><b>Storage:</b> Cakes need to be handled with care and refrigerated. Can be left out 30–45 mins in an air-conditioned room, or 15–30 mins at room temperature, subject to conditions.</li>
-              <li><b>Shelf Life:</b> Best consumed within 3 days. For cakes with fruits, best consumed on the same day.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Self Pick Up</h4>
-            <ol>
-              <li><b>By Appointment:</b> Self collection is strictly by appointment; changes or late charges apply. Additional $10/hour for holding applies. Uncollected cakes will be disposed after 24 hours from the said collection date and time.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Delivery</h4>
-            <ol>
-              <li><b>Delivery Areas &amp; Fees:</b> Our delivery covers all areas in Singapore. Refer to our delivery fee table for more information.</li>
-              <li><b>Redelivery Charges:</b> Should redelivery be required within the delivery time frame, charges apply. We strongly discourage leaving cakes/bakes outdoors as they are perishable and require refrigeration.</li>
-              <li><b>Own Courier:</b> If you use your own courier, you're responsible for liaising with them directly. Arrange a car, not a motorbike, to transport your cake safely.</li>
-            </ol>
-          </div>
-
-          <div class="tnc-group">
-            <h4>Collection / Delivery Terms</h4>
-            <ol>
-              <li><b>Kekki Responsibility:</b> While we take every precaution during delivery and setup, we cannot be held responsible for any damage once our products have been delivered/collected.</li>
-              <li><b>Customer Responsibility:</b> Please ensure you or a designated representative is available to collect the product at the agreed time and location. Fees apply for redelivery, and any damage from unavailability is the customer's responsibility.</li>
-              <li><b>Delivery Timing &amp; Variability:</b> We deliver freshly baked cakes every day. You may request a specific delivery time slot; note deliveries may arrive early, on time, or slightly delayed depending on driver availability, route conditions, weather, and distance.</li>
-            </ol>
-          </div>
-
-        </div>
-      </details>
-
-      <div class="agree-box">
-        <input type="checkbox" id="tncAgree" name="tnc" required>
-        <label for="tncAgree">I have read and agree to Kekki Cakery's Terms &amp; Conditions above. <span class="req">*</span></label>
       </div>
     </div>
 
@@ -1053,6 +1152,162 @@
   ['dragleave','drop'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.remove('drag');}));
   dropZone.addEventListener('drop',e=>add(e.dataTransfer.files));
 
+  // Cupcake reference upload (single image)
+  const cupcakeInput=document.getElementById('cupcakePhotos');
+  const cupcakePreviews=document.getElementById('cupcakePreviews');
+  const cupcakeDropZone=document.getElementById('cupcakeDropZone');
+  const cupcakeFiles=[];
+
+  function renderCupcake(){
+    cupcakePreviews.innerHTML='';
+    cupcakeFiles.forEach((f,i)=>{
+      const url=URL.createObjectURL(f);
+      const d=document.createElement('div');
+      d.className='thumb';
+      d.innerHTML=`<img src="${url}" alt=""><button type="button" aria-label="Remove">×</button>`;
+      d.querySelector('button').onclick=()=>{cupcakeFiles.splice(i,1);renderCupcake();};
+      cupcakePreviews.appendChild(d);
+    });
+  }
+  function addCupcake(list){
+    for(const f of list){
+      if(f.type.startsWith('image/')){
+        cupcakeFiles.length=0;
+        cupcakeFiles.push(f);
+        break;
+      }
+    }
+    renderCupcake();
+  }
+  cupcakeDropZone.onclick=()=>cupcakeInput.click();
+  cupcakeInput.onchange=e=>addCupcake(e.target.files);
+  ['dragover','dragenter'].forEach(ev=>cupcakeDropZone.addEventListener(ev,e=>{e.preventDefault();cupcakeDropZone.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>cupcakeDropZone.addEventListener(ev,e=>{e.preventDefault();cupcakeDropZone.classList.remove('drag');}));
+  cupcakeDropZone.addEventListener('drop',e=>addCupcake(e.dataTransfer.files));
+
+  // ═══════════════════════════════════════════════════════════
+  //  SLOT AVAILABILITY CALENDAR
+  //  Paste your published Google Sheet CSV link below.
+  //  Sheet > File > Share > Publish to web > CSV > copy link.
+  //  Leave the quotes empty to hide the calendar entirely.
+  // ═══════════════════════════════════════════════════════════
+
+  const AVAILABILITY_CSV_URL='';
+  const BLOCK_FULLY_BOOKED=true;   // set to false to let customers pick fully booked dates
+
+  (function(){
+    const wrap=document.getElementById('calWrap');
+    if(!AVAILABILITY_CSV_URL) return;
+
+    const grid=document.getElementById('calGrid');
+    const monthLabel=document.getElementById('calMonth');
+    const prevBtn=document.getElementById('calPrev');
+    const nextBtn=document.getElementById('calNext');
+    const dateInput=document.querySelector('input[name=date]');
+    const statuses={};
+    const today=new Date(); today.setHours(0,0,0,0);
+    let view=new Date(today.getFullYear(),today.getMonth(),1);
+
+    const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const pad=n=>String(n).padStart(2,'0');
+    const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+
+    function normaliseDate(raw){
+      const t=(raw||'').trim();
+      if(!t) return '';
+      let m=t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if(m) return m[1]+'-'+pad(m[2])+'-'+pad(m[3]);
+      m=t.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);   // D/M/YYYY
+      if(m) return m[3]+'-'+pad(m[2])+'-'+pad(m[1]);
+      const d=new Date(t);
+      return isNaN(d)?'':key(d);
+    }
+
+    function normaliseStatus(raw){
+      const t=(raw||'').trim().toLowerCase();
+      if(!t) return '';
+      if(t.includes('full')&&!t.includes('almost')) return 'full';
+      if(t.includes('almost')||t.includes('limited')||t.includes('few')) return 'almost';
+      if(t.includes('avail')||t.includes('open')) return 'avail';
+      return '';
+    }
+
+    function parseCSV(text){
+      text.trim().split(/\r?\n/).forEach((line,i)=>{
+        const cells=line.split(',').map(c=>c.replace(/^"|"$/g,'').trim());
+        const d=normaliseDate(cells[0]);
+        const st=normaliseStatus(cells[1]);
+        if(d&&st) statuses[d]=st;
+      });
+    }
+
+    function render(){
+      monthLabel.textContent=MONTHS[view.getMonth()]+' '+view.getFullYear();
+      grid.innerHTML='';
+      ['S','M','T','W','T','F','S'].forEach(d=>{
+        const el=document.createElement('div');
+        el.className='cal-dow'; el.textContent=d;
+        grid.appendChild(el);
+      });
+
+      const first=new Date(view.getFullYear(),view.getMonth(),1);
+      const daysInMonth=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+      for(let i=0;i<first.getDay();i++){
+        const el=document.createElement('div');
+        el.className='cal-day pad';
+        grid.appendChild(el);
+      }
+
+      for(let day=1;day<=daysInMonth;day++){
+        const d=new Date(view.getFullYear(),view.getMonth(),day);
+        const k=key(d);
+        const el=document.createElement('div');
+        el.className='cal-day';
+        el.textContent=day;
+
+        if(d<today){
+          el.classList.add('past');
+        }else{
+          const st=statuses[k]||'avail';
+          el.classList.add(st);
+          if(st==='full'&&BLOCK_FULLY_BOOKED){
+            el.title='Fully booked';
+          }else{
+            el.setAttribute('role','button');
+            el.setAttribute('tabindex','0');
+            const pick=()=>{
+              dateInput.value=k;
+              dateInput.dispatchEvent(new Event('change',{bubbles:true}));
+              render();
+            };
+            el.onclick=pick;
+            el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}};
+          }
+        }
+        if(dateInput.value===k) el.classList.add('sel');
+        grid.appendChild(el);
+      }
+
+      prevBtn.disabled=view.getFullYear()===today.getFullYear()&&view.getMonth()===today.getMonth();
+    }
+
+    prevBtn.onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);render();};
+    nextBtn.onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);render();};
+    dateInput.addEventListener('change',()=>{
+      const v=dateInput.value;
+      if(v){
+        const d=new Date(v+'T00:00:00');
+        view=new Date(d.getFullYear(),d.getMonth(),1);
+      }
+      render();
+    });
+
+    fetch(AVAILABILITY_CSV_URL)
+      .then(r=>{if(!r.ok)throw new Error('fetch failed');return r.text();})
+      .then(t=>{parseCSV(t);wrap.classList.add('show');render();})
+      .catch(()=>{ /* sheet unreachable — calendar stays hidden, native date picker still works */ });
+  })();
+
   // ═══════════════════════════════════════════════════════════
   //  PASTE YOUR MAKE.COM WEBHOOK URL BETWEEN THE QUOTES BELOW 👇
   //  (Step 2 of the launch guide shows you exactly where to get it)
@@ -1073,8 +1328,14 @@
   // Cupcake quantity field toggle
   document.getElementById('cupcakeSize').addEventListener('change',function(){
     const q=document.getElementById('cupcakeQtyField');
+    const r=document.getElementById('cupcakeRefField');
     q.style.display=this.value?'block':'none';
-    if(!this.value)document.getElementById('cupcakeQty').value='';
+    r.style.display=this.value?'block':'none';
+    if(!this.value){
+      document.getElementById('cupcakeQty').value='';
+      cupcakeFiles.length=0;
+      renderCupcake();
+    }
   });
 
   // Product type toggle — Cake vs Cupcakes
@@ -1154,6 +1415,12 @@
         data:await fileToBase64(file)
       })));
 
+      const cupcakePhotosData=await Promise.all(cupcakeFiles.map(async file=>({
+        filename:file.name,
+        type:file.type,
+        data:await fileToBase64(file)
+      })));
+
       const payload={
         enquiry_id:enquiryId,
         name:val('name'),
@@ -1180,6 +1447,7 @@
         gift:gift,
         cupcake_size:cupcakeSize,
         cupcake_qty:cupcakeSize?cupcakeQty:'',
+        cupcake_photos:cupcakeSize?cupcakePhotosData:[],
         main_cupcake_size:mainCupSize,
         main_cupcake_qty:mainCupSize?mainCupQty:'',
         banana_qty:val('banana_qty'),
@@ -1187,6 +1455,11 @@
         urgent:isUrgent,
         days_to_event:daysUntilEvent(val('date')),
         urgent_acknowledged:isUrgent?(f.elements['urgent_acknowledged']?.checked||false):false,
+        ack_response:f.elements['ack_response']?.checked||false,
+        ack_design:f.elements['ack_design']?.checked||false,
+        ack_updates:f.elements['ack_updates']?.checked||false,
+        ack_drafts:f.elements['ack_drafts']?.checked||false,
+        ack_booking:f.elements['ack_booking']?.checked||false,
         tnc_agreed:f.elements['tnc']?.checked||false,
         photo_count:files.length,
         photos:photos,
