@@ -828,10 +828,12 @@
           <div class="cal-grid" id="calGrid"></div>
           <div class="cal-legend">
             <span><i style="background:#EAF6EE;border:1px solid #CBE7D5"></i>Available</span>
-            <span><i style="background:#FDF1DC;border:1px solid #F2DFBC"></i>Almost full — check with us</span>
+            <span><i style="background:#FDF1DC;border:1px solid #F2DFBC"></i>Limited slots</span>
+            <span><i style="background:#EAF1FB;border:1px solid #CADAF1"></i>Delivery only</span>
+            <span><i style="background:#FFF4E8;border:1px solid #F1D8BC"></i>Partially booked</span>
             <span><i style="background:#FBEAEE;border:1px solid #F0D2DA"></i>Fully booked</span>
           </div>
-          <p class="cal-note">Tap a date to select it. Availability is indicative and confirmed only once payment is made. 🤍</p>
+          <p class="cal-note" id="calStatusNote">Tap a date to select it. Availability is indicative and confirmed only once payment is made. 🤍</p>
         </div>
       </div>
 
@@ -1228,21 +1230,57 @@
     function normaliseStatus(raw){
       const t=(raw||'').trim().toLowerCase();
       if(!t) return '';
+      // Match the six exact statuses used in the Availability Google Sheet.
+      if(t.includes('morning fully booked')) return 'morning-full';
+      if(t.includes('afternoon fully booked')) return 'afternoon-full';
       if(t.includes('delivery only')) return 'delivery';
-      if(t.includes('morning fully booked')||t.includes('afternoon fully booked')) return 'partial';
       if(t.includes('fully booked')||t==='full') return 'full';
-      if(t.includes('almost')||t.includes('limited')||t.includes('few')) return 'almost';
+      if(t.includes('limited')||t.includes('almost')||t.includes('few')) return 'almost';
       if(t.includes('avail')||t.includes('open')) return 'avail';
       return '';
     }
 
+    function parseCSVRows(text){
+      const rows=[];
+      let row=[],cell='',quoted=false;
+      for(let i=0;i<text.length;i++){
+        const ch=text[i];
+        if(ch==='"'){
+          if(quoted&&text[i+1]==='"'){cell+='"';i++;}
+          else quoted=!quoted;
+        }else if(ch===','&&!quoted){
+          row.push(cell);cell='';
+        }else if((ch==='\n'||ch==='\r')&&!quoted){
+          if(ch==='\r'&&text[i+1]==='\n') i++;
+          row.push(cell);
+          if(row.some(v=>String(v).trim()!=='')) rows.push(row);
+          row=[];cell='';
+        }else{
+          cell+=ch;
+        }
+      }
+      row.push(cell);
+      if(row.some(v=>String(v).trim()!=='')) rows.push(row);
+      return rows;
+    }
+
     function parseCSV(text){
-      text.trim().split(/\r?\n/).forEach((line,i)=>{
-        const cells=line.split(',').map(c=>c.replace(/^"|"$/g,'').trim());
-        const d=normaliseDate(cells[0]);
-        const st=normaliseStatus(cells[1]);
-        if(d&&st) statuses[d]=st;
-      });
+      const rows=parseCSVRows(text);
+      // Find the actual Date / Status header row. This allows the sheet to keep
+      // the title, instructions and status guide above the website data.
+      let dateCol=0,statusCol=1,startRow=0;
+      for(let r=0;r<rows.length;r++){
+        const vals=rows[r].map(v=>String(v||'').trim().toLowerCase());
+        const di=vals.indexOf('date');
+        const si=vals.indexOf('status');
+        if(di!==-1&&si!==-1){dateCol=di;statusCol=si;startRow=r+1;break;}
+      }
+      for(let r=startRow;r<rows.length;r++){
+        const d=normaliseDate(rows[r][dateCol]);
+        const raw=(rows[r][statusCol]||'').trim();
+        const st=normaliseStatus(raw);
+        if(d&&st) statuses[d]={type:st,label:raw};
+      }
     }
 
     function render(){
@@ -1272,15 +1310,17 @@
         if(d<today){
           el.classList.add('past');
         }else{
-          const st=statuses[k]||'avail';
-          el.classList.add(st);
+          const info=statuses[k]||{type:'avail',label:'Available'};
+          const st=info.type;
+          const cssType=(st==='morning-full'||st==='afternoon-full')?'partial':st;
+          el.classList.add(cssType);
+          el.title=info.label||'Available';
           if(st==='full'&&BLOCK_FULLY_BOOKED){
-            el.title='Fully booked';
+            el.setAttribute('aria-label',day+' '+MONTHS[view.getMonth()]+' — Fully Booked');
           }else{
-            if(st==='delivery') el.title='Delivery only';
-            if(st==='partial') el.title='Limited time slots available · evening delivery only';
             el.setAttribute('role','button');
             el.setAttribute('tabindex','0');
+            el.setAttribute('aria-label',day+' '+MONTHS[view.getMonth()]+' — '+(info.label||'Available'));
             const pick=()=>{
               dateInput.value=k;
               dateInput.dispatchEvent(new Event('change',{bubbles:true}));
@@ -1292,6 +1332,13 @@
         }
         if(dateInput.value===k) el.classList.add('sel');
         grid.appendChild(el);
+      }
+
+      const statusNote=document.getElementById('calStatusNote');
+      if(dateInput.value&&statuses[dateInput.value]){
+        statusNote.textContent='Selected date: '+statuses[dateInput.value].label+' 🤍';
+      }else{
+        statusNote.textContent='Tap a date to select it. Availability is indicative and confirmed only once payment is made. 🤍';
       }
 
       prevBtn.disabled=view.getFullYear()===today.getFullYear()&&view.getMonth()===today.getMonth();
